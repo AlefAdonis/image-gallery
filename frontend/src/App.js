@@ -21,6 +21,8 @@ const App = () => {
       .catch((error) => {
         console.log(error);
       });
+
+    setWordSearch("");
   };
 
   return (

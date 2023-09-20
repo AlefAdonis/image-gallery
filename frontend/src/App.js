@@ -12,7 +12,7 @@ const App = () => {
     e.preventDefault();
     console.log(wordSearch);
     fetch(
-      `https://api.unsplash.com/photos/random/?query=${wordSearch}&client_id=${UNSPLASH_KEY}`
+      `https://api.unsplash.com/photos/random/?query=${wordSearch}&client_id=${UNSPLASH_KEY}`,
     )
       .then((res) => res.json())
       .then((data) => {

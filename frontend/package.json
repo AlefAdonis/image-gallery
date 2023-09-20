@@ -28,8 +28,8 @@
       "plugin:prettier/recommended"
     ]
   },
-  "prettier": {
-    
+  "prettier": { 
+    "tabWidth": 2
   },
   "browserslist": {
     "production": [

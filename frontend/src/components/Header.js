@@ -4,14 +4,14 @@ import Navbar from "react-bootstrap/Navbar";
 import { ReactComponent as Logo } from "../images/logo.svg";
 
 const navbarStyle = {
-  backgroundColor: "#eeeeee",
+  backgroundColor: "#202024",
 };
 
 const Header = ({ title }) => {
   return (
     <Navbar style={navbarStyle}>
       <Container>
-        <Logo style={{ maxWidth: "16rem", maxHeight: "4rem" }} />
+        <Logo alt={title} style={{ maxWidth: "20rem", maxHeight: "6rem" }} />
       </Container>
     </Navbar>
   );

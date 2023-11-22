@@ -1,5 +1,6 @@
 import React from "react";
 import { Card, Button } from "react-bootstrap";
+import Nav from "react-bootstrap/Nav";
 
 const ImageCard = ({ image, deleteImage, saveImage }) => {
   return (
@@ -17,6 +18,16 @@ const ImageCard = ({ image, deleteImage, saveImage }) => {
           </Button>
         )}
       </Card.Body>
+      <Card.Footer className="text-muted text-center">
+        <Card.Text>Author: {image.user?.name ?? "No author name"}</Card.Text>
+        <Nav.Link
+          hidden={!image.user.portfolio_url}
+          href={image.user.portfolio_url}
+          target="_blank"
+        >
+          Portfolio
+        </Nav.Link>
+      </Card.Footer>
     </Card>
   );
 };

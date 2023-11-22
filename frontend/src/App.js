@@ -1,5 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import Header from "./components/Header";
 import Search from "./components/Search";
 import ImageCard from "./components/ImageCard";
@@ -12,22 +13,52 @@ const App = () => {
   const [wordSearch, setWordSearch] = useState("");
   const [images, setImages] = useState([]);
 
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    fetch(`${API_URL}/new-image?query=${wordSearch}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setImages([{ ...data, title: wordSearch }, ...images]);
-      })
-      .catch((error) => {
+  useEffect(() => {
+    async function getSavedImages() {
+      try {
+        const res = await axios.get(`${API_URL}/images`);
+        setImages(res.data || []);
+      } catch (error) {
         console.log(error);
-      });
+      }
+    }
+    getSavedImages();
+  }, []);
+
+  const handleSearchSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const res = await axios.get(`${API_URL}/new-image?query=${wordSearch}`);
+      setImages([{ ...res.data, title: wordSearch }, ...images]);
+    } catch (error) {
+      console.log(error);
+    }
 
     setWordSearch("");
   };
 
   const handleDeleteImage = (id) => {
     setImages(images.filter((image) => image.id !== id));
+  };
+
+  const handleSaveImage = async (id) => {
+    const imageToBeSaved = images.find((image) => image.id === id);
+    imageToBeSaved.saved = true;
+
+    try {
+      const res = await axios.post(`${API_URL}/images`, imageToBeSaved);
+
+      if (res?.data.inserted_id) {
+        setImages(
+          images.map((image) =>
+            image.id === id ? { ...image, saved: true } : image,
+          ),
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -45,7 +76,11 @@ const App = () => {
           <Row xs={1} md={2} lg={3}>
             {images.map((image, index) => (
               <Col key={index} className="pb-3">
-                <ImageCard image={image} deleteImage={handleDeleteImage} />
+                <ImageCard
+                  image={image}
+                  deleteImage={handleDeleteImage}
+                  saveImage={handleSaveImage}
+                />
               </Col>
             ))}
           </Row>

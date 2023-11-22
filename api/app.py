@@ -58,7 +58,7 @@ def images():
         result = images_collection.insert_one(image)
         inserted_id = result.inserted_id
         return {"inserted_id": inserted_id}
-
+        
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)

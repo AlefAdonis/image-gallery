@@ -1,5 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useState, useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import Header from "./components/Header";
 import Search from "./components/Search";
@@ -21,8 +23,10 @@ const App = () => {
         const res = await axios.get(`${API_URL}/images`);
         setImages(res.data || []);
         setLoading(false);
+
+        toast("Saved images downloaded!");
       } catch (error) {
-        console.log(error);
+        toast.error(`Error downloading saved images! ${error.message}`);
       }
     }
     getSavedImages();
@@ -34,8 +38,12 @@ const App = () => {
     try {
       const res = await axios.get(`${API_URL}/new-image?query=${wordSearch}`);
       setImages([{ ...res.data, title: wordSearch }, ...images]);
+
+      toast.info(`New image ${wordSearch.toUpperCase()} was found!`);
     } catch (error) {
-      console.log(error);
+      toast.error(
+        `Error while searching ${wordSearch.toUpperCase()}! ${error.message}`,
+      );
     }
 
     setWordSearch("");
@@ -46,10 +54,15 @@ const App = () => {
       const res = await axios.delete(`${API_URL}/images/${id}`);
 
       if (res.data?.delete_id === id) {
+        toast.warn(
+          `Image ${images
+            .find((i) => i.id === id)
+            .title.toUpperCase()} was deleted!`,
+        );
         setImages(images.filter((image) => image.id !== id));
       }
     } catch (error) {
-      console.log(error);
+      toast.error(`Error while deleting image! ${error.message}`);
     }
   };
 
@@ -66,9 +79,14 @@ const App = () => {
             image.id === id ? { ...image, saved: true } : image,
           ),
         );
+        toast.success(`Image ${imageToBeSaved.title.toUpperCase()} was saved!`);
       }
     } catch (error) {
-      console.log(error);
+      toast.error(
+        `Image ${imageToBeSaved.title.toUpperCase()} could not be saved! ${
+          error.message
+        }`,
+      );
     }
   };
 
@@ -103,6 +121,12 @@ const App = () => {
           </Container>
         </>
       )}
+      <ToastContainer
+        position="bottom-right"
+        theme="colored"
+        pauseOnHover={false}
+        autoClose={3000}
+      />
     </div>
   );
 };

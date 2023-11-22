@@ -21,8 +21,8 @@ const ImageCard = ({ image, deleteImage, saveImage }) => {
       <Card.Footer className="text-muted text-center">
         <Card.Text>Author: {image.user?.name ?? "No author name"}</Card.Text>
         <Nav.Link
-          hidden={!image.user.portfolio_url}
-          href={image.user.portfolio_url}
+          hidden={!image.user?.portfolio_url}
+          href={image.user?.portfolio_url}
           target="_blank"
         >
           Portfolio

@@ -24,7 +24,9 @@ const App = () => {
         setImages(res.data || []);
         setLoading(false);
 
-        toast("Saved images downloaded!");
+        !res.data.length
+          ? toast("No images found in database!")
+          : toast("Saved images downloaded!");
       } catch (error) {
         toast.error(`Error downloading saved images! ${error.message}`);
       }
@@ -123,7 +125,7 @@ const App = () => {
       )}
       <ToastContainer
         position="bottom-right"
-        theme="colored"
+        theme="dark"
         pauseOnHover={false}
         autoClose={3000}
       />

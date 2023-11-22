@@ -69,7 +69,7 @@ def delete_images(image_id):
             return {"error": "Image was not deleted. Try Again!"}, 500
 
         if result and not result.deleted_count:
-            return {"error": "Image not Found"},404
+            return {"error": "Image not Found"}, 404
 
         else :
             return {"delete_id": image_id}

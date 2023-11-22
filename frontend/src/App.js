@@ -6,18 +6,21 @@ import Search from "./components/Search";
 import ImageCard from "./components/ImageCard";
 import { Container, Row, Col } from "react-bootstrap";
 import Welcome from "./components/Welcome";
+import Loading from "./components/Spinner";
 
 const API_URL = process.env.REACT_APP_API_URL || "http://127.0.0.1:8080";
 
 const App = () => {
   const [wordSearch, setWordSearch] = useState("");
   const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function getSavedImages() {
       try {
         const res = await axios.get(`${API_URL}/images`);
         setImages(res.data || []);
+        setLoading(false);
       } catch (error) {
         console.log(error);
       }
@@ -38,8 +41,16 @@ const App = () => {
     setWordSearch("");
   };
 
-  const handleDeleteImage = (id) => {
-    setImages(images.filter((image) => image.id !== id));
+  const handleDeleteImage = async (id) => {
+    try {
+      const res = await axios.delete(`${API_URL}/images/${id}`);
+
+      if (res.data?.delete_id === id) {
+        setImages(images.filter((image) => image.id !== id));
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleSaveImage = async (id) => {
@@ -64,28 +75,34 @@ const App = () => {
   return (
     <div>
       <Header title="Images Gallery" />
-      <Search
-        word={wordSearch}
-        setWord={setWordSearch}
-        handleSubmit={handleSearchSubmit}
-      />
-      <Container className="mt-4">
-        {!images.length ? (
-          <Welcome />
-        ) : (
-          <Row xs={1} md={2} lg={3}>
-            {images.map((image, index) => (
-              <Col key={index} className="pb-3">
-                <ImageCard
-                  image={image}
-                  deleteImage={handleDeleteImage}
-                  saveImage={handleSaveImage}
-                />
-              </Col>
-            ))}
-          </Row>
-        )}
-      </Container>
+      {loading ? (
+        <Loading />
+      ) : (
+        <>
+          <Search
+            word={wordSearch}
+            setWord={setWordSearch}
+            handleSubmit={handleSearchSubmit}
+          />
+          <Container className="mt-4">
+            {!images.length ? (
+              <Welcome />
+            ) : (
+              <Row xs={1} md={2} lg={3}>
+                {images.map((image, index) => (
+                  <Col key={index} className="pb-3">
+                    <ImageCard
+                      image={image}
+                      deleteImage={handleDeleteImage}
+                      saveImage={handleSaveImage}
+                    />
+                  </Col>
+                ))}
+              </Row>
+            )}
+          </Container>
+        </>
+      )}
     </div>
   );
 };

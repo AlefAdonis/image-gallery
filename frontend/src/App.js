@@ -55,7 +55,7 @@ const App = () => {
     try {
       const res = await axios.delete(`${API_URL}/images/${id}`);
 
-      if (res.data?.delete_id === id) {
+      if (res.data?.delete_id === id || res.status === 203) {
         toast.warn(
           `Image ${images
             .find((i) => i.id === id)
